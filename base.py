@@ -57,7 +57,7 @@ def deploy(name, host, username, password, remoteBuildPath, args, dockerPath):
     copyFromLocalToRemote(ssh, sftp, dockerPath, os.path.join(remoteBuildPath, name).replace('\\','/'))
 
     # executeSsh(ssh, 'docker build -t "{0}:tag" --no-cache {1}'.format(name, os.path.join(remoteBuildPath, name).replace('\\','/')))
-    executeSsh(ssh, 'docker build -t "{0}:tag" {1}'.format(name, os.path.join(remoteBuildPath, name).replace('\\','/')))
+    executeSsh(ssh, 'docker build -t "{0}:tag" --no-cache {1}'.format(name, os.path.join(remoteBuildPath, name).replace('\\','/')))
     executeSsh(ssh, 'docker kill {0}'.format(name), True)
     executeSsh(ssh, 'docker rm {0}'.format(name), True)
     executeSsh(ssh, 'docker run -d --name "{0}" {1} -t "{0}:tag"'.format(name, args))
