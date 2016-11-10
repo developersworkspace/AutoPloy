@@ -13,6 +13,9 @@ def deployNodesToServer(username, password, ipAddress):
     deploy('redis7004', ipAddress, username, password, '/root/builds', '-p 7004:7004 -p 17004:17004', os.path.join(currentPath, 'Templates/Redis/cluster/7004'))
     deploy('redis7005', ipAddress, username, password, '/root/builds', '-p 7005:7005 -p 17005:17005', os.path.join(currentPath, 'Templates/Redis/cluster/7005'))
     deploy('redis7006', ipAddress, username, password, '/root/builds', '-p 7006:7006 -p 17006:17006', os.path.join(currentPath, 'Templates/Redis/cluster/7006'))
+    deploy('redis7007', ipAddress, username, password, '/root/builds', '-p 7007:7007 -p 17007:17007', os.path.join(currentPath, 'Templates/Redis/cluster/7007'))
+    deploy('redis7008', ipAddress, username, password, '/root/builds', '-p 7008:7008 -p 17008:17008', os.path.join(currentPath, 'Templates/Redis/cluster/7008'))
+    deploy('redis7009', ipAddress, username, password, '/root/builds', '-p 7009:7009 -p 17009:17009', os.path.join(currentPath, 'Templates/Redis/cluster/7009'))
 
 def deployClusterTools(username, password, ipAddress):
 
@@ -32,8 +35,11 @@ def clusterAllNodes(username, password, ipAddress, ipAddresses):
         nodes.append('{0}:{1}'.format(ip, '7004'))
         nodes.append('{0}:{1}'.format(ip, '7005'))
         nodes.append('{0}:{1}'.format(ip, '7006'))
+        nodes.append('{0}:{1}'.format(ip, '7007'))
+        nodes.append('{0}:{1}'.format(ip, '7008'))
+        nodes.append('{0}:{1}'.format(ip, '7009'))
 
-    executeSsh(ssh, 'echo yes | /tmp/redis-stable/src/redis-trib.rb create --replicas 1 {0}'.format(' '.join(nodes)))
+    executeSsh(ssh, 'echo yes | /tmp/redis-stable/src/redis-trib.rb create --replicas 2 {0}'.format(' '.join(nodes)))
     
 if __name__ == "__main__":
 
@@ -49,7 +55,7 @@ if __name__ == "__main__":
 
     username = options.username
     password = options.password
-    ipAddresses = args
+    ipAddresses = args[0].split(' ')
 
     for ipAddress in ipAddresses:
          deployNodesToServer(username, password, ipAddress)
