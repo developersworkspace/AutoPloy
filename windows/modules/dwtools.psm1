@@ -36,13 +36,13 @@ function UnzipOnRemote ($sourceFile, $destinationPath, $computerName, $username,
 
     Invoke-Command -Session $session -ScriptBlock {
         param($path)
-        Get-ChildItem -Path $path -Include * | remove-Item -recurse
+        Remove-Item $path -Force -Recurse
     } -ArgumentList $destinationPath
     
     Invoke-Command -Session $session -ScriptBlock {
         param($sourceFile, $destinationPath)
         
-        Add-Type -assembly "system.io.compression.filesystem" 
+        Add-Type -Assembly "System.IO.Compression.FileSystem"
         [io.compression.zipfile]::ExtractToDirectory($sourceFile, $destinationPath)
         # Expand-Archive -Path $sourcePath -DestinationPath $destinationPath
     } -ArgumentList $sourceFile, $destinationPath

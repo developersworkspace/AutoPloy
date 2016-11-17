@@ -48,22 +48,8 @@ def copyFromLocalToRemote(ssh, sftp, localDirectory, remoteDirectory):
         print('Copying File {0} to {1}'.format(sourcePath, destinationPath))
         sftp.put(sourcePath, destinationPath)
     
-def deploy(name, host, username, password, remoteBuildPath, args, dockerPath):
-    print('Connecting to remote server')
-    ssh = getSsh(host, username, password)
-    sftp = getSFtp(host, username, password)
-    print('Connected')
-
-    copyFromLocalToRemote(ssh, sftp, dockerPath, os.path.join(remoteBuildPath, name).replace('\\','/'))
-
-    # executeSsh(ssh, 'docker build -t "{0}:tag" --no-cache {1}'.format(name, os.path.join(remoteBuildPath, name).replace('\\','/')))
-    executeSsh(ssh, 'docker build -t "{0}:tag" --no-cache {1}'.format(name, os.path.join(remoteBuildPath, name).replace('\\','/')))
-    executeSsh(ssh, 'docker kill {0}'.format(name), True)
-    executeSsh(ssh, 'docker rm {0}'.format(name), True)
-    executeSsh(ssh, 'docker run -d --name "{0}" {1} -t "{0}:tag"'.format(name, args))
-
-    print('Closing connection to remote server')
-    ssh.close()
-    sftp.close()
+def copyFileFromLocalToRemote(sftp, localFilename, remoteFilename):
+    print('Copying File {0} to {1}'.format(localFilename, remoteFilename))
+    sftp.put(localFilename, remoteFilename)
 
 
