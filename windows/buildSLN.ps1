@@ -10,10 +10,10 @@ param(
 
 $currentSourcePath = Join-Path -Path $sourcePath -ChildPath $buildNumber
 
-Remove-Item -Recurse -Force $currentSourcePath
-New-Item $currentSourcePath -ItemType Directory
+# Remove-Item -Recurse -Force $currentSourcePath
+# New-Item $currentSourcePath -ItemType Directory
 
-git.exe clone -b $gitBranch $gitUrl $currentSourcePath
+# git.exe clone -b $gitBranch $gitUrl $currentSourcePath
 
 $currentSLNPath = Join-Path -Path $currentSourcePath -ChildPath $relativeSLNPath
 $currentNugetPath = Join-Path -Path $currentSourcePath -ChildPath $relativeNugetPath

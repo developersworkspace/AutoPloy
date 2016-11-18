@@ -22,6 +22,12 @@ function RemoteCopyFile ($sourceFile, $destinationFile, $computerName, $username
 
     $session = New-PSSession -ComputerName $computerName -Credential $computerCredentials
 
+    Invoke-Command -Session $session -ScriptBlock {
+        param($path)
+        Remove-Item $path -Force -Recurse
+        New-Item -Path $path -ItemType Directory
+    } -ArgumentList $destinationFile
+
     Copy-Item -ToSession $session -Path $sourceFile -Destination $destinationFile -Force
 
     Remove-PSSession –Session $session
@@ -37,6 +43,7 @@ function UnzipOnRemote ($sourceFile, $destinationPath, $computerName, $username,
     Invoke-Command -Session $session -ScriptBlock {
         param($path)
         Remove-Item $path -Force -Recurse
+        New-Item -Path $path -ItemType Directory
     } -ArgumentList $destinationPath
     
     Invoke-Command -Session $session -ScriptBlock {
