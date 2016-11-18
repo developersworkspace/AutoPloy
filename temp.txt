@@ -1,0 +1,1 @@
+.\buildSLN.ps1 -sourcePath "C:\Temp\source" -buildPath "C:\Temp\builds" -buildNumber "001" -gitUrl "https://developersworkspace@bitbucket.org/developersworkspace/epons.git" -relativeNugetPath "SourceCode\EPONS\.nuget\nuget.exe" -relativeSLNPath "SourceCode\EPONS\EPONS.sln" -gitBranch "QueryObjects"

@@ -1,7 +1,30 @@
-RMDIR "C:\JenkinsBuilds\epons.developersworkspace.co.za" /S /Q
-MKDIR "C:\JenkinsBuilds\epons.developersworkspace.co.za"
+param(
+        [string]$sourcePath,
+        [string]$buildPath,
+        [string]$buildNumber,
+        [string]$gitUrl,
+        [string]$gitBranch,
+        [string]$relativeSLNPath,
+        [string]$relativeNugetPath
+    )
 
-"C:\Program Files\Git\bin\git" clone https://developersworkspace@bitbucket.org/developersworkspace/epons.git "C:\JenkinsWorkspaces\epons.developersworkspace.co.za"
-"C:\JenkinsWorkspaces\epons.developersworkspace.co.za\SourceCode\EPONS\.nuget\nuget.exe" restore "C:\JenkinsWorkspaces\epons.developersworkspace.co.za\SourceCode\EPONS\EPONS.sln"
+$currentSourcePath = Join-Path -Path $sourcePath -ChildPath $buildNumber
 
-"C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" /m /t:clean;Rebuild /p:Configuration=EPONS;BuildingProject=true;OutDir="C:\JenkinsBuilds\epons.developersworkspace.co.za" "C:\JenkinsWorkspaces\epons.developersworkspace.co.za\SourceCode\EPONS\EPONS.sln"
+Remove-Item -Recurse -Force $currentSourcePath
+New-Item $currentSourcePath -ItemType Directory
+
+git.exe clone -b $gitBranch $gitUrl $currentSourcePath
+
+$currentSLNPath = Join-Path -Path $currentSourcePath -ChildPath $relativeSLNPath
+$currentNugetPath = Join-Path -Path $currentSourcePath -ChildPath $relativeNugetPath
+
+Invoke-Expression -Command "$currentNugetPath update -self"
+Invoke-Expression -Command "$currentNugetPath restore $currentSLNPath"
+
+$currentBuildPath = Join-Path -Path $buildPath -ChildPath $buildNumber
+
+$msBuildPath = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
+$args = "/m /t:clean;Rebuild /p:Configuration=Release;BuildingProject=true;OutDir=`"$currentBuildPath`" `"$currentSLNPath`""
+
+Start-Process -FilePath $msBuildPath -ArgumentList "$args"
+
